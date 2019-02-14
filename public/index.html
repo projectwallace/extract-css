@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Extract CSS</title>
+		<style>
+			html {
+				font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto',
+					'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans',
+					'Helvetica Neue', sans-serif;
+				font-weight: 300;
+				color: hsl(198, 12%, 66%);
+				background-color: hsl(203.3, 27.3%, 12.9%);
+			}
+
+			body {
+				max-width: 600px;
+				margin: 0 auto;
+				padding: 2em 1em;
+			}
+
+			h1,
+			h2 {
+				font-weight: 400;
+				color: hsl(198, 10%, 82%);
+			}
+
+			li + li {
+				margin-top: 0.5em;
+			}
+
+			a {
+				color: hsl(151.7, 66%, 47.3%);
+			}
+		</style>
+	</head>
+	<body>
+		<h1>Extract CSS</h1>
+		<p>Get all the CSS from a single webpage.</p>
+
+		<h2>Example request urls:</h2>
+		<ul>
+			<li>
+				<a href="https://extract-css.now.sh/https://www.google.com"
+					>https://extract-css.now.sh/https://www.google.com</a
+				>
+			</li>
+			<li>
+				<a
+					href="https://extract-css.now.sh/https://www.projectwallace.com/~teamwallace/css-tricks/colors"
+					>https://extract-css.now.sh/https://www.projectwallace.com/~teamwallace/css-tricks/colors</a
+				>
+			</li>
+			<li>
+				<a href="https://zeit.co/now"
+					>https://extract-css.now.sh/https://zeit.co/now</a
+				>
+			</li>
+		</ul>
+
+		<p>
+			Source code
+			<a href="https://github.com/bartveneman/extract-css" rel="noopener"
+				>available on GitHub</a
+			>.
+		</p>
+	</body>
+</html>
