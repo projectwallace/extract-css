@@ -1,7 +1,7 @@
-<center>
+<div align="center">
 	<h1>Extract CSS</h1>
 	<p>Get all the CSS from a webpage.</p>
-</center>
+</div>
 
 [![Platform: Now V2](https://img.shields.io/badge/platform-Now%20V2-50e3c2.svg)](https://zeit.co/now)
 
