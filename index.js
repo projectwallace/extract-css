@@ -1,7 +1,6 @@
 const { ENV } = process.env
 const puppeteer = require(ENV && ENV === 'dev' ? 'puppeteer' : 'puppeteer-core')
 const chrome = require('chrome-aws-lambda')
-const { parse } = require('url')
 
 async function extractCssWithCoverageFromUrl(requestUrl) {
 	// Setup a browser instance
@@ -21,41 +20,20 @@ async function extractCssWithCoverageFromUrl(requestUrl) {
 	await browser.close()
 
 	// Turn the coverage into a usable format
-	return coverage.reduce(
-		(totals, { text: css, url }) => {
-			totals.css += css
-
-			// Url === requestUrl if the styles are a <style>
-			// block, <link>s have their own dedicated url
-			if (url.includes(requestUrl)) {
-				totals.styles.push(css)
-			}
-
-			if (!url.includes(requestUrl)) {
-				totals.links.push({ url, css })
-			}
-
-			return totals
-		},
-		{ links: [], styles: [], css: '' }
-	)
-}
-
-function json(obj) {
-	return JSON.stringify(obj, null, 2)
+	return coverage.map(css => css.text).join('')
 }
 
 module.exports = async (req, res) => {
 	const url = req.url.slice(1)
 
-	res.setHeader('Content-Type', 'application/json')
-
 	try {
 		const css = await extractCssWithCoverageFromUrl(url)
 		res.statusCode = 200
-		return res.end(json(css))
+		res.setHeader('Content-Type', 'text/css')
+		return res.end(css)
 	} catch (error) {
 		res.statusCode = 400
-		return res.end(json(error))
+		res.setHeader('Content-Type', 'application/json')
+		return res.end(JSON.stringify(error, null, 2))
 	}
 }
