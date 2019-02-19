@@ -13,7 +13,7 @@ async function extractCssWithCoverageFromUrl(requestUrl) {
 	// Create a new page and navigate to it
 	const page = await browser.newPage()
 	await page.coverage.startCSSCoverage()
-	await page.goto(requestUrl)
+	await page.goto(requestUrl, { waitUntil: 'networkidle2' })
 	const coverage = await page.coverage.stopCSSCoverage()
 
 	// Close the browser to close the connection and free up resources
