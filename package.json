@@ -10,6 +10,7 @@
 	"license": "MIT",
 	"dependencies": {
 		"chrome-aws-lambda": "^1.12.0",
+		"got": "^9.6.0",
 		"puppeteer-core": "^1.12.2"
 	},
 	"devDependencies": {

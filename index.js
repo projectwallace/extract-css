@@ -1,6 +1,7 @@
 const { ENV } = process.env
 const puppeteer = require(ENV && ENV === 'dev' ? 'puppeteer' : 'puppeteer-core')
 const chrome = require('chrome-aws-lambda')
+const got = require('got')
 
 async function extractCssWithCoverageFromUrl(requestUrl) {
 	// Setup a browser instance
@@ -27,7 +28,9 @@ module.exports = async (req, res) => {
 	const url = req.url.slice(1)
 
 	try {
-		const css = await extractCssWithCoverageFromUrl(url)
+		const css = url.endsWith('.css')
+			? (await got(url)).body
+			: await extractCssWithCoverageFromUrl(url)
 		res.statusCode = 200
 		res.setHeader('Content-Type', 'text/css')
 		return res.end(css)
