@@ -1,28 +1,5 @@
-const { ENV } = process.env
-const puppeteer = require(ENV && ENV === 'dev' ? 'puppeteer' : 'puppeteer-core')
-const chrome = require('chrome-aws-lambda')
 const got = require('got')
-
-async function extractCssWithCoverageFromUrl(requestUrl) {
-	// Setup a browser instance
-	const browser = await puppeteer.launch({
-		args: chrome.args,
-		executablePath: await chrome.executablePath,
-		headless: true
-	})
-
-	// Create a new page and navigate to it
-	const page = await browser.newPage()
-	await page.coverage.startCSSCoverage()
-	await page.goto(requestUrl, { waitUntil: 'networkidle2' })
-	const coverage = await page.coverage.stopCSSCoverage()
-
-	// Close the browser to close the connection and free up resources
-	await browser.close()
-
-	// Turn the coverage into a usable format
-	return coverage.map(css => css.text).join('')
-}
+const extractCss = require('./extract-css')
 
 module.exports = async (req, res) => {
 	const url = req.url.slice(1)
@@ -30,7 +7,7 @@ module.exports = async (req, res) => {
 	try {
 		const css = url.endsWith('.css')
 			? (await got(url)).body
-			: await extractCssWithCoverageFromUrl(url)
+			: await extractCss(url)
 		res.statusCode = 200
 		res.setHeader('Content-Type', 'text/css')
 		return res.end(css)
