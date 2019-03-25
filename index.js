@@ -1,7 +1,7 @@
 const got = require('got')
 const puppeteer = require('puppeteer-core')
 const chrome = require('chrome-aws-lambda')
-const extractCss = require('./extract-css')
+const extractCss = require('extract-css-core')
 
 module.exports = async (req, res) => {
 	const url = req.url.slice(1)
@@ -10,6 +10,7 @@ module.exports = async (req, res) => {
 		const css = url.endsWith('.css')
 			? (await got(url)).body
 			: await extractCss(url, {
+					waitUntil: 'networkidle0',
 					browserOverride: {
 						executablePath: await chrome.executablePath,
 						puppeteer,
