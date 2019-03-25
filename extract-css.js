@@ -1,5 +1,9 @@
-const puppeteer = require('puppeteer-core')
-const chrome = require('chrome-aws-lambda')
+function InvalidBrowserOverrideError(message) {
+	this.name = 'InvalidBrowserOverrideError'
+	this.message = `BrowserOverride is not valid. ${message} https://github.com/bartveneman/extract-css-core#options`
+}
+
+InvalidBrowserOverrideError.prototype = Error.prototype
 
 function InvalidUrlError({ url, statusCode, statusText }) {
 	this.name = 'InvalidUrlError'
@@ -8,20 +12,58 @@ function InvalidUrlError({ url, statusCode, statusText }) {
 
 InvalidUrlError.prototype = Error.prototype
 
-module.exports = async url => {
+const validateBrowserOverride = ({ executablePath, args, puppeteer }) => {
+	if (typeof executablePath !== 'string') {
+		throw new InvalidBrowserOverrideError(
+			`Check that executablePath is a valid string, got "${JSON.stringify(
+				executablePath
+			)}"`
+		)
+	}
+
+	if (!Array.isArray(args)) {
+		throw new InvalidBrowserOverrideError('Check that args is an Array.')
+	}
+
+	if (typeof puppeteer.launch !== 'function') {
+		throw new InvalidBrowserOverrideError(
+			'Check that puppeteer.launch is a function.'
+		)
+	}
+
+	return true
+}
+
+module.exports = async (
+	url,
+	{ debug = false, waitUntil = 'networkidle2', browserOverride = null } = {}
+) => {
+	// Basic validation for browserOverride
+	if (browserOverride !== null) {
+		validateBrowserOverride(browserOverride)
+	}
+
+	// Setup the minimal browser options that we need to launch
+	const browserOptions = {
+		headless: debug !== true,
+		executablePath: browserOverride
+			? browserOverride.executablePath
+			: puppeteer.executablePath(),
+		args: browserOverride ? browserOverride.args : []
+	}
+
 	// Setup a browser instance
-	const browser = await puppeteer.launch({
-		headless: true,
-		args: chrome.args,
-		executablePath: await chrome.executablePath
-	})
+	const browser = await (
+		(browserOverride && browserOverride.puppeteer) ||
+		puppeteer
+	).launch(browserOptions)
 
 	// Create a new page and navigate to it
 	const page = await browser.newPage()
 
 	// Start CSS coverage. This is the meat and bones of this module
 	await page.coverage.startCSSCoverage()
-	const response = await page.goto(url, { waitUntil: 'networkidle2' })
+	const response = await page.goto(url, { waitUntil })
 
 	// Make sure that we only try to extract CSS from valid pages.
 	// Bail out if the response is an invalid request (400, 500)
