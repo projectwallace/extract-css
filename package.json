@@ -3,21 +3,22 @@
 	"version": "0.1.0",
 	"description": "Get all the CSS from a page by passing a url. Uses Puppeteer to render the page with Chrome and traverse the DOM looking for link[rel=stylesheet] and style tags",
 	"main": "index.js",
+	"engines": {
+		"node": "8.10.x"
+	},
 	"scripts": {
 		"test": "xo",
-		"dev": "nodemon dev.js"
+		"dev": "now dev"
 	},
 	"license": "MIT",
 	"dependencies": {
-		"chrome-aws-lambda": "^1.12.0",
-		"extract-css-core": "^0.3.0",
+		"chrome-aws-lambda": "^1.18.1",
 		"got": "^9.6.0",
-		"puppeteer-core": "^1.12.2"
+		"normalize-url": "^4.3.0",
+		"puppeteer-core": "^1.18.1"
 	},
 	"devDependencies": {
-		"nodemon": "^1.18.10",
-		"prettier": "^1.16.4",
-		"puppeteer": "^1.12.2",
+		"prettier": "^1.18.2",
 		"xo": "^0.24.0"
 	},
 	"xo": {
