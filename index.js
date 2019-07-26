@@ -64,7 +64,10 @@ const extractCss = async url => {
 }
 
 module.exports = async (req, res) => {
-	const url = normalizeUrl(req.url.slice(1), { stripWWW: false })
+	const url = normalizeUrl(req.url.slice(1), {
+		stripWWW: false,
+		stripProtocol: true
+	})
 
 	if (!isUrl(url)) {
 		res.statusCode = 406
