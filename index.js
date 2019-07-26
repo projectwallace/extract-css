@@ -65,7 +65,7 @@ const extractCss = async url => {
 }
 
 module.exports = async (req, res) => {
-	const url = req.url.slice(1)
+	const url = normalizeUrl(req.url.slice(1), { stripWWW: false })
 
 	try {
 		const css = url.endsWith('.css')
