@@ -6,7 +6,7 @@ const LRU = require('lru-cache')
 
 const cssCache = new LRU({
 	max: 500,
-	maxAge: 60
+	maxAge: 60 * 1000
 })
 
 const extractCss = async url => {
