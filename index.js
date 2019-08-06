@@ -83,6 +83,7 @@ module.exports = async (req, res) => {
 	}
 
 	if (cssCache.has(url)) {
+		console.log('getting', url, 'from cache')
 		res.setHeader('Content-Type', 'text/css')
 		res.statusCode = 200
 		return res.end(cssCache.get(url))
