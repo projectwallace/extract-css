@@ -2,6 +2,12 @@ const got = require('got')
 const chromium = require('chrome-aws-lambda')
 const normalizeUrl = require('normalize-url')
 const isUrl = require('is-url')
+const LRU = require('lru-cache')
+
+const cssCache = new LRU({
+	max: 500,
+	maxAge: 60 * 1000
+})
 
 const extractCss = async url => {
 	const browser = await chromium.puppeteer.launch({
@@ -76,6 +82,12 @@ module.exports = async (req, res) => {
 		)
 	}
 
+	if (cssCache.has(url)) {
+		res.setHeader('Content-Type', 'text/css')
+		res.statusCode = 200
+		return res.end(cssCache.get(url))
+	}
+
 	try {
 		const css = url.endsWith('.css')
 			? (await got(url)).body
@@ -83,6 +95,7 @@ module.exports = async (req, res) => {
 
 		res.setHeader('Content-Type', 'text/css')
 		res.statusCode = 200
+		cssCache.set(url, css)
 		return res.end(css)
 	} catch (error) {
 		res.statusCode = 500
