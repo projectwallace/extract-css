@@ -7,7 +7,7 @@
 		"node": "8.10.x"
 	},
 	"scripts": {
-		"test": "xo",
+		"test": "eslint index.js",
 		"dev": "now dev"
 	},
 	"license": "MIT",
@@ -21,16 +21,10 @@
 		"puppeteer-core": "^1.18.1"
 	},
 	"devDependencies": {
-		"prettier": "^1.18.2",
-		"xo": "^0.24.0"
+		"@bartveneman/eslint-config-bv": "0.0.2",
+		"eslint": "^6.4.0"
 	},
-	"xo": {
-		"prettier": true
-	},
-	"prettier": {
-		"semi": false,
-		"singleQuote": true,
-		"useTabs": true,
-		"bracketSpacing": true
+	"eslintConfig": {
+		"extends": "@bartveneman/eslint-config-bv"
 	}
 }
