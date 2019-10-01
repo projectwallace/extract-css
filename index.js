@@ -37,7 +37,6 @@ module.exports = async (req, res) => {
 	} catch (error) {
 		res.statusCode = 500
 		res.setHeader('Content-Type', 'application/json')
-
-		return res.end(JSON.stringify(error))
+		return res.send({message: error.message})
 	}
 }
