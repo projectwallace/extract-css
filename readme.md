@@ -19,10 +19,6 @@ This package uses an actual browser under the hood to get all the CSS and expose
 I have no idea how local testing for Now is supposed to work, so I created a tiny HTTP server in `dev.js` that calls the actual function that gets deployed.
 Run `ENV=dev npm run dev` to run a local version of the function for local testing.
 
-## Deployment
-
-Using [Now](https://zeit.co/now): `now`.
-
 ## Credits
 
 - This repo is pretty much an exact copy of [this example from Zeit](https://github.com/zeit/now-examples/tree/master/puppeteer-screenshot).
