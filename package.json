@@ -4,7 +4,7 @@
 	"description": "Get all the CSS from a page by passing a url. Uses Puppeteer to render the page with Chrome and traverse the DOM looking for link[rel=stylesheet] and style tags",
 	"main": "index.js",
 	"engines": {
-		"node": "8.10.x"
+		"node": "12.x"
 	},
 	"scripts": {
 		"test": "eslint *.js",
@@ -12,15 +12,15 @@
 	},
 	"license": "MIT",
 	"dependencies": {
-		"chrome-aws-lambda": "1.19.0",
+		"chrome-aws-lambda": "^2.0.1",
 		"is-url": "^1.2.4",
 		"lru-cache": "^5.1.1",
-		"normalize-url": "^4.4.0",
-		"puppeteer-core": "1.19.0"
+		"normalize-url": "^4.5.0",
+		"puppeteer-core": "^2.0.0"
 	},
 	"devDependencies": {
 		"@bartveneman/eslint-config-bv": "0.0.2",
-		"eslint": "^6.4.0"
+		"eslint": "^6.8.0"
 	},
 	"eslintConfig": {
 		"extends": "@bartveneman/eslint-config-bv"

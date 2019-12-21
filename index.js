@@ -1,15 +1,15 @@
 const normalizeUrl = require('normalize-url')
 const isUrl = require('is-url')
 const LRU = require('lru-cache')
-const {extractCss} = require('./_chromium')
+const { extractCss } = require('./_chromium')
 
 const cssCache = new LRU({
 	max: 500,
-	maxAge: 60 * 1000 // 1 minute
+	maxAge: 3 * 60 * 1000 // 3 minutes
 })
 
 module.exports = async (req, res) => {
-	const url = normalizeUrl(req.url.slice(1), {stripWWW: false})
+	const url = normalizeUrl(req.url.slice(1), { stripWWW: false })
 
 	if (!isUrl(url)) {
 		res.statusCode = 406
@@ -37,6 +37,6 @@ module.exports = async (req, res) => {
 	} catch (error) {
 		res.statusCode = 500
 		res.setHeader('Content-Type', 'application/json')
-		return res.send({message: error.message})
+		return res.send({ message: error.message })
 	}
 }
