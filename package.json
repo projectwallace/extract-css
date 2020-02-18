@@ -12,11 +12,11 @@
 	},
 	"license": "MIT",
 	"dependencies": {
-		"chrome-aws-lambda": "^2.0.1",
+		"chrome-aws-lambda": "^2.1.1",
 		"is-url": "^1.2.4",
 		"lru-cache": "^5.1.1",
 		"normalize-url": "^4.5.0",
-		"puppeteer-core": "^2.0.0"
+		"puppeteer-core": "^2.1.1"
 	},
 	"devDependencies": {
 		"@bartveneman/eslint-config-bv": "0.0.2",
