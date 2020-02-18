@@ -1,5 +1,8 @@
+/* global document */
+
 const puppeteer = require('puppeteer-core')
 const chrome = require('chrome-aws-lambda')
+const crypto = require('crypto')
 const exePath =
 	process.platform === 'win32' ?
 		'C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe' :
@@ -21,6 +24,10 @@ async function getOptions() {
 		executablePath: await chrome.executablePath,
 		headless: chrome.headless
 	}
+}
+
+function hashString(str) {
+	return crypto.createHash('md5').update(str, 'utf8').digest('hex')
 }
 
 // Keep a locally cached 'page' object so that we
@@ -62,18 +69,45 @@ exports.extractCss = async url => {
 	const coverage = await page.coverage.stopCSSCoverage()
 
 	// Get all CSS generated with the CSSStyleSheet API
+	// This is primarily for CSS-in-JS solutions
 	// See: https://developer.mozilla.org/en-US/docs/Web/API/CSSRule/cssText
 	const styleSheetsApiCss = await page.evaluate(() => {
-		/* global document */
 		return [...document.styleSheets]
 			.filter(stylesheet => stylesheet.href === null)
 			.map(stylesheet =>
 				[...stylesheet.cssRules]
 					.map(cssStyleRule => cssStyleRule.cssText)
-					.join('')
+					.join('\n')
 			)
-			.join('')
+			.join('\n')
 	})
+
+	// Get all inline styles: <element style="">
+	// This creates a new CSSRule for every inline style
+	// attribute it encounters.
+	//
+	// Example:
+	//
+	// HTML:
+	//    <h1 style="color: red;">Text</h1>
+	//
+	// CSSRule:
+	//    [x-inline-style-237a7d] { color: red; }
+	//                    ^^^^^^
+	//
+	// The 6-digit hash is based on the actual CSS, so it's not
+	// necessarily unique!
+	const inlineCssRules = await page.evaluate(() => {
+		return [...document.querySelectorAll('[style]')]
+			.map(element => element.getAttribute('style'))
+			.filter(Boolean)
+	})
+	const inlineCss = inlineCssRules
+		.map(rule => {
+			const hash = hashString(rule).slice(-6)
+			return `[x-inline-style-${hash}] { ${rule} }`
+		})
+		.join('\n')
 
 	// Turn the coverage Array into a single string of CSS
 	const coverageCss = coverage
@@ -84,7 +118,11 @@ exports.extractCss = async url => {
 		.filter(styles => styles.url !== url)
 		// The `text` property contains the actual CSS
 		.map(({text}) => text)
-		.join('')
+		.join('\n')
 
-	return Promise.resolve(styleSheetsApiCss + coverageCss)
+	const css = [coverageCss, styleSheetsApiCss, inlineCss]
+		.filter(Boolean)
+		.join('\n')
+
+	return Promise.resolve(css)
 }
