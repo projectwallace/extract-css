@@ -43,7 +43,7 @@ exports.extractCss = async url => {
 	const page = await getPage()
 
 	// Start CSS coverage. This is the meat and bones of this module
-	await page.coverage.startCSSCoverage()
+	await page.coverage.startCSSCoverage().catch(() => {})
 
 	const response = await page.goto(url, {waitUntil: 'networkidle0'})
 
