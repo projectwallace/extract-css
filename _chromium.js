@@ -1,9 +1,9 @@
 const puppeteer = require('puppeteer-core')
 const chrome = require('chrome-aws-lambda')
 const exePath =
-	process.platform === 'win32'
-		? 'C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe'
-		: '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'
+	process.platform === 'win32' ?
+		'C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe' :
+		'/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'
 
 const isDev = process.env.NOW_REGION === 'dev1'
 
@@ -43,10 +43,9 @@ exports.extractCss = async url => {
 	const page = await getPage()
 
 	// Start CSS coverage. This is the meat and bones of this module
-	// Fail silently if it's already enabled
-	await page.coverage.startCSSCoverage().catch(() => {})
+	await page.coverage.startCSSCoverage()
 
-	const response = await page.goto(url, { waitUntil: 'networkidle2' })
+	const response = await page.goto(url, {waitUntil: 'networkidle0'})
 
 	// Make sure that we only try to extract CSS from valid pages.
 	// Bail out if the response is an invalid request (400, 500)
@@ -84,7 +83,7 @@ exports.extractCss = async url => {
 		// we requested is an indication that this was a <style> tag
 		.filter(styles => styles.url !== url)
 		// The `text` property contains the actual CSS
-		.map(({ text }) => text)
+		.map(({text}) => text)
 		.join('')
 
 	return Promise.resolve(styleSheetsApiCss + coverageCss)
