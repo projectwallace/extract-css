@@ -15,24 +15,37 @@ module.exports = async (req, res) => {
 		res.statusCode = 406
 		res.setHeader('Content-Type', 'application/json')
 
-		return res.end(
-			JSON.stringify({
-				message: 'The provided URL is not valid'
-			})
-		)
+		return res.send({
+			message: 'The provided URL is not valid'
+		})
 	}
 
-	res.setHeader('Content-Type', 'text/css')
 	res.statusCode = 200
 
 	if (cssCache.has(url)) {
-		return res.end(cssCache.get(url))
+		const result = cssCache.get(url)
+
+		if (req.headers.accept === 'application/json') {
+			res.setHeader('Content-Type', 'application/json')
+			return res.send(result)
+		}
+
+		res.setHeader('Content-Type', 'text/css')
+		const css = result.map(({css}) => css).join('\n')
+		return res.end(css)
 	}
 
 	try {
-		const css = await extractCss(url)
-		cssCache.set(url, css)
+		const result = await extractCss(url)
+		cssCache.set(url, result)
 
+		if (req.headers.accept === 'application/json') {
+			res.setHeader('Content-Type', 'application/json')
+			return res.send(result)
+		}
+
+		res.setHeader('Content-Type', 'text/css')
+		const css = result.map(({css}) => css).join('\n')
 		return res.end(css)
 	} catch (error) {
 		res.statusCode = 500
