@@ -2,7 +2,6 @@
 
 const puppeteer = require('puppeteer-core')
 const chrome = require('chrome-aws-lambda')
-const crypto = require('crypto')
 const exePath =
 	process.platform === 'win32' ?
 		'C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe' :
@@ -24,10 +23,6 @@ async function getOptions() {
 		executablePath: await chrome.executablePath,
 		headless: chrome.headless
 	}
-}
-
-function hashString(str) {
-	return crypto.createHash('md5').update(str, 'utf8').digest('hex')
 }
 
 // Keep a locally cached 'page' object so that we
@@ -64,6 +59,22 @@ exports.extractCss = async url => {
 		)
 	}
 
+	// If the response is a CSS file, return that file
+	// instead of running our complicated setup
+	const headers = response.headers()
+
+	if (headers['content-type'].includes('text/css')) {
+		const css = await response.text()
+
+		return Promise.resolve([
+			{
+				type: 'file',
+				href: url,
+				css
+			}
+		])
+	}
+
 	// Coverage contains a lot of <style> and <link> CSS,
 	// but not all...
 	const coverage = await page.coverage.stopCSSCoverage()
@@ -73,13 +84,15 @@ exports.extractCss = async url => {
 	// See: https://developer.mozilla.org/en-US/docs/Web/API/CSSRule/cssText
 	const styleSheetsApiCss = await page.evaluate(() => {
 		return [...document.styleSheets]
+			// Only take the stylesheets without href (these are <style> tags)
 			.filter(stylesheet => stylesheet.href === null)
-			.map(stylesheet =>
-				[...stylesheet.cssRules]
-					.map(cssStyleRule => cssStyleRule.cssText)
-					.join('\n')
-			)
-			.join('\n')
+			.map(stylesheet => {
+				return {
+					type: stylesheet.ownerNode.tagName.toLowerCase(),
+					href: stylesheet.href || document.location.href,
+					css: [...stylesheet.cssRules].map(({cssText}) => cssText).join('\n')
+				}
+			})
 	})
 
 	// Get all inline styles: <element style="">
@@ -88,41 +101,40 @@ exports.extractCss = async url => {
 	//
 	// Example:
 	//
-	// HTML:
-	//    <h1 style="color: red;">Text</h1>
+	// ```html
+	// <h1 style="color: red;">Text</h1>
+	// ```
 	//
-	// CSSRule:
-	//    [x-inline-style-237a7d] { color: red; }
-	//                    ^^^^^^
-	//
-	// The 6-digit hash is based on the actual CSS, so it's not
-	// necessarily unique!
+	// ```css
+	// [x-extract-css-inline-style] {
+	//   color: red;
+	// }
+	// ```
 	const inlineCssRules = await page.evaluate(() => {
 		return [...document.querySelectorAll('[style]')]
 			.map(element => element.getAttribute('style'))
+			// Filter out empty style="" attributes
 			.filter(Boolean)
 	})
 	const inlineCss = inlineCssRules
-		.map(rule => {
-			const hash = hashString(rule).slice(-6)
-			return `[x-inline-style-${hash}] { ${rule} }`
-		})
-		.join('\n')
+		.map(rule => `[x-extract-css-inline-style] { ${rule} }`)
+		.map(css => ({type: 'inline', href: url, css}))
 
-	// Turn the coverage Array into a single string of CSS
-	const coverageCss = coverage
+	const links = coverage
 		// Filter out the <style> tags that were found in the coverage
 		// report since we've conducted our own search for them.
 		// A coverage CSS item with the same url as the url of the page
 		// we requested is an indication that this was a <style> tag
-		.filter(styles => styles.url !== url)
-		// The `text` property contains the actual CSS
-		.map(({text}) => text)
-		.join('\n')
+		.filter(entry => entry.url !== url)
+		.map(entry => ({
+			href: entry.url,
+			css: entry.text,
+			type: 'link-or-import'
+		}))
 
-	const css = [coverageCss, styleSheetsApiCss, inlineCss]
-		.filter(Boolean)
-		.join('\n')
+	const css = links
+		.concat(styleSheetsApiCss)
+		.concat(inlineCss)
 
 	return Promise.resolve(css)
 }
