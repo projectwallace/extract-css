@@ -25,24 +25,10 @@ async function getOptions() {
 	}
 }
 
-// Keep a locally cached 'page' object so that we
-// don't have to request the browser instance to
-// create a new one for each request.
-let _page
-
-async function getPage() {
-	if (_page) {
-		return _page
-	}
-
+exports.extractCss = async url => {
 	const options = await getOptions()
 	const browser = await puppeteer.launch(options)
-	_page = await browser.newPage() // eslint-disable-line
-	return _page
-}
-
-exports.extractCss = async url => {
-	const page = await getPage()
+	const page = await browser.newPage()
 
 	// Start CSS coverage. This is the meat and bones of this module
 	await page.coverage.startCSSCoverage().catch(() => {})
