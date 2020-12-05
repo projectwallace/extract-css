@@ -1,10 +1,10 @@
 {
 	"name": "extract-css",
-	"version": "0.1.0",
+	"version": "1.0.0",
 	"description": "Get all the CSS from a page by passing a url. Uses Puppeteer to render the page with Chrome and traverse the DOM looking for link[rel=stylesheet] and style tags",
 	"main": "index.js",
 	"engines": {
-		"node": "12.x"
+		"node": ">=12.x"
 	},
 	"scripts": {
 		"test": "eslint *.js",
@@ -12,15 +12,15 @@
 	},
 	"license": "MIT",
 	"dependencies": {
-		"chrome-aws-lambda": "^2.1.1",
+		"chrome-aws-lambda": "^5.5.0",
 		"is-url": "^1.2.4",
-		"lru-cache": "^5.1.1",
-		"normalize-url": "^5.0.0",
-		"puppeteer-core": "^2.1.1"
+		"lru-cache": "^6.0.0",
+		"normalize-url": "^5.3.0",
+		"puppeteer-core": "^5.5.0"
 	},
 	"devDependencies": {
 		"@bartveneman/eslint-config-bv": "0.0.2",
-		"eslint": "^6.8.0"
+		"eslint": "^7.15.0"
 	},
 	"eslintConfig": {
 		"extends": "@bartveneman/eslint-config-bv"

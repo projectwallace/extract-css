@@ -2,37 +2,20 @@
 
 const puppeteer = require('puppeteer-core')
 const chrome = require('chrome-aws-lambda')
-const exePath =
-	process.platform === 'win32' ?
-		'C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe' :
-		'/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'
+const normalizeUrl = require('normalize-url')
 
-const isDev = process.env.NOW_REGION === 'dev1'
-
-async function getOptions() {
-	if (isDev) {
-		return {
-			args: [],
-			executablePath: exePath,
-			headless: true
-		}
-	}
-
-	return {
+exports.extractCss = async url => {
+	const browser = await puppeteer.launch({
 		args: chrome.args,
 		executablePath: await chrome.executablePath,
 		headless: chrome.headless
-	}
-}
-
-exports.extractCss = async url => {
-	const options = await getOptions()
-	const browser = await puppeteer.launch(options)
+	})
 	const page = await browser.newPage()
 
 	// Start CSS coverage. This is the meat and bones of this module
 	await page.coverage.startCSSCoverage().catch(() => {})
 
+	url = normalizeUrl(url, {stripWWW: false})
 	const response = await page.goto(url, {waitUntil: 'networkidle0'})
 
 	// Make sure that we only try to extract CSS from valid pages.

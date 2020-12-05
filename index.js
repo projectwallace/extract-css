@@ -5,7 +5,7 @@ const {extractCss} = require('./_chromium')
 
 const cssCache = new LRU({
 	max: 500,
-	maxAge: 3 * 60 * 1000 // 3 minutes
+	maxAge: 60 * 1000 // 60 seconds
 })
 
 module.exports = async (req, res) => {
@@ -16,7 +16,7 @@ module.exports = async (req, res) => {
 		res.setHeader('Content-Type', 'application/json')
 
 		return res.send({
-			message: 'The provided URL is not valid'
+			message: `The provided URL \`${url}\` is not valid`
 		})
 	}
 
