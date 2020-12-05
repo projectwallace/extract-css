@@ -1,15 +1,14 @@
-const normalizeUrl = require('normalize-url')
 const isUrl = require('is-url')
 const LRU = require('lru-cache')
 const {extractCss} = require('./_chromium')
 
 const cssCache = new LRU({
 	max: 500,
-	maxAge: 3 * 60 * 1000 // 3 minutes
+	maxAge: 60 * 1000 // 60 seconds
 })
 
 module.exports = async (req, res) => {
-	const url = normalizeUrl(req.url.slice(1), {stripWWW: false})
+	const url = req.url.slice(1)
 
 	if (!isUrl(url)) {
 		res.statusCode = 406
