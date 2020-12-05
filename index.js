@@ -1,3 +1,4 @@
+const normalizeUrl = require('normalize-url')
 const isUrl = require('is-url')
 const LRU = require('lru-cache')
 const {extractCss} = require('./_chromium')
@@ -8,14 +9,14 @@ const cssCache = new LRU({
 })
 
 module.exports = async (req, res) => {
-	const url = req.url.slice(1)
+	const url = normalizeUrl(req.url.slice(1), {stripWWW: false})
 
 	if (!isUrl(url)) {
 		res.statusCode = 406
 		res.setHeader('Content-Type', 'application/json')
 
 		return res.send({
-			message: 'The provided URL is not valid'
+			message: `The provided URL \`${url}\` is not valid`
 		})
 	}
 
