@@ -1,0 +1,9 @@
+{
+	"version": 2,
+	"public": true,
+	"functions": {
+		"api/get-css.js": {
+			"memory": 1024
+		}
+	}
+}
