@@ -14,11 +14,6 @@ The folks from [CSS Stats](https://cssstats.com/) have created [get-css](https:/
 
 This package uses an actual browser under the hood to get all the CSS and exposes an HTTP endpoint that accepts a url to get the CSS from.
 
-## Local testing
-
-I have no idea how local testing for Now is supposed to work, so I created a tiny HTTP server in `dev.js` that calls the actual function that gets deployed.
-Run `ENV=dev npm run dev` to run a local version of the function for local testing.
-
 ## Credits
 
 - This repo is pretty much an exact copy of [this example from Zeit](https://github.com/zeit/now-examples/tree/master/puppeteer-screenshot).
