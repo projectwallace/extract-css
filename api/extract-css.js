@@ -1,6 +1,6 @@
 const isUrl = require('is-url')
 const LRU = require('lru-cache')
-const {extractCss} = require('./_chromium')
+const { extractCss } = require('./_chromium')
 
 const cssCache = new LRU({
 	max: 500,
@@ -8,11 +8,10 @@ const cssCache = new LRU({
 })
 
 module.exports = async (req, res) => {
-	const url = req.url.slice(1)
+	const { url } = req.query
 
 	if (!isUrl(url)) {
-		res.statusCode = 406
-		res.setHeader('Content-Type', 'application/json')
+		res.statusCode = 400
 
 		return res.send({
 			message: `The provided URL \`${url}\` is not valid`
@@ -25,12 +24,11 @@ module.exports = async (req, res) => {
 		const result = cssCache.get(url)
 
 		if (req.headers.accept === 'application/json') {
-			res.setHeader('Content-Type', 'application/json')
-			return res.send(result)
+			return res.json(result)
 		}
 
 		res.setHeader('Content-Type', 'text/css')
-		const css = result.map(({css}) => css).join('\n')
+		const css = result.map(({ css }) => css).join('\n')
 		return res.end(css)
 	}
 
@@ -39,16 +37,14 @@ module.exports = async (req, res) => {
 		cssCache.set(url, result)
 
 		if (req.headers.accept === 'application/json') {
-			res.setHeader('Content-Type', 'application/json')
-			return res.send(result)
+			return res.json(result)
 		}
 
 		res.setHeader('Content-Type', 'text/css')
-		const css = result.map(({css}) => css).join('\n')
+		const css = result.map(({ css }) => css).join('\n')
 		return res.end(css)
 	} catch (error) {
 		res.statusCode = 500
-		res.setHeader('Content-Type', 'application/json')
-		return res.send({message: error.message})
+		return res.json({ message: error.message })
 	}
 }

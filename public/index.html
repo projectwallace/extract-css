@@ -1,72 +1,68 @@
 <!DOCTYPE html>
 <html lang="en">
-	<head>
-		<meta charset="UTF-8" />
-		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<title>Extract CSS</title>
-		<meta name="robots" content="noindex, nofollow" />
-		<style>
-			html {
-				font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto',
-					'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans',
-					'Helvetica Neue', sans-serif;
-				font-weight: 300;
-				color: hsl(198, 12%, 66%);
-				background-color: hsl(203.3, 27.3%, 12.9%);
-			}
 
-			body {
-				max-width: 600px;
-				margin: 0 auto;
-				padding: 2em 1em;
-			}
+<head>
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<title>Extract CSS</title>
+	<meta name="robots" content="noindex, nofollow" />
+	<style>
+		html {
+			font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto',
+				'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans',
+				'Helvetica Neue', sans-serif;
+			font-weight: 300;
+			color: hsl(198, 12%, 66%);
+			background-color: hsl(203.3, 27.3%, 12.9%);
+		}
 
-			h1,
-			h2 {
-				font-weight: 400;
-				color: hsl(198, 10%, 82%);
-			}
+		body {
+			max-width: 600px;
+			margin: 0 auto;
+			padding: 2em 1em;
+		}
 
-			li + li {
-				margin-top: 0.5em;
-			}
+		h1,
+		h2 {
+			font-weight: 400;
+			color: hsl(198, 10%, 82%);
+		}
 
-			a {
-				color: hsl(151.7, 66%, 47.3%);
-			}
-		</style>
-	</head>
-	<body>
-		<h1>Extract CSS</h1>
-		<p>Get all the CSS from a single webpage.</p>
+		li+li {
+			margin-top: 0.5em;
+		}
 
-		<h2>Example request urls:</h2>
-		<ul>
-			<li>
-				<a href="/www.google.com">https://extract-css.now.sh/www.google.com</a>
-			</li>
-			<li>
-				<a href="/www.projectwallace.com/~teamwallace/css-tricks/colors"
-					>https://extract-css.now.sh/www.projectwallace.com/~teamwallace/css-tricks/colors</a
-				>
-			</li>
-			<li>
-				<a href="/zeit.co/now">https://extract-css.now.sh/zeit.co/now</a>
-			</li>
-			<li>
-				<a href="/cdn.jsdelivr.net/npm/tailwindcss/dist/tailwind.min.css"
-					>https://extract-css.now.sh/cdn.jsdelivr.net/npm/tailwindcss/dist/tailwind.min.css
-				</a>
-			</li>
-		</ul>
+		a {
+			color: hsl(151.7, 66%, 47.3%);
+		}
+	</style>
+</head>
 
-		<p>Please note that there is a 1 minute cache for each (normalized) url.</p>
+<body>
+	<h1>Extract CSS</h1>
+	<p>Get all the CSS from a single webpage.</p>
 
-		<p>
-			Source code
-			<a href="https://github.com/bartveneman/extract-css" rel="noopener"
-				>available on GitHub</a
-			>.
-		</p>
-	</body>
+	<h2>Example request urls:</h2>
+	<ul>
+		<li>
+			<a href="/api/extract-css?url=https://www.google.com">https://www.google.com</a>
+		</li>
+		<li>
+			<a
+				href="/api/extract-css?url=https://www.projectwallace.com/~teamwallace/css-tricks/colors">https://www.projectwallace.com/~teamwallace/css-tricks/colors</a>
+		</li>
+		<li>
+			<a href="/api/extract-css?url=https://cdn.jsdelivr.net/npm/tailwindcss/dist/tailwind.min.css">https://cdn.jsdelivr.net/npm/tailwindcss/dist/tailwind.min.css
+			</a>
+		</li>
+	</ul>
+
+	<p>Please note that there is a 1 minute cache for each (normalized) url.</p>
+
+	<p>
+		Source code
+		<a href="https://github.com/bartveneman/extract-css" rel="noopener">available on GitHub</a>.
+	</p>
+</body>
+
 </html>
