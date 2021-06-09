@@ -14,7 +14,7 @@
 		"chrome-aws-lambda": "^8.0.2",
 		"is-url": "^1.2.4",
 		"lru-cache": "^6.0.0",
-		"normalize-url": "^5.3.0",
+		"normalize-url": "^5.3.1",
 		"puppeteer-core": "^8.0.0"
 	},
 	"devDependencies": {
