@@ -1,13 +1,13 @@
-const isUrl = require('is-url')
-const LRU = require('lru-cache')
-const { extractCss } = require('./_chromium')
+import LRU from 'lru-cache'
+import { extractCss } from './_chromium.js'
+import { isUrl } from './_is-url.js'
 
 const cssCache = new LRU({
 	max: 500,
 	maxAge: 60 * 1000 // 60 seconds
 })
 
-module.exports = async (req, res) => {
+export default async (req, res) => {
 	const { url } = req.query
 
 	if (!isUrl(url)) {
