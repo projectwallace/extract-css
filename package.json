@@ -8,7 +8,7 @@
 		"node": ">=14.x"
 	},
 	"scripts": {
-		"test": "eslint *.js"
+		"test": "eslint ./api/*.js"
 	},
 	"license": "MIT",
 	"dependencies": {

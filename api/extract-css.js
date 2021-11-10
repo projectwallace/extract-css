@@ -1,6 +1,6 @@
 import LRU from 'lru-cache'
-import { extractCss } from './_chromium.js'
-import { isUrl } from './_is-url.js'
+import {extractCss} from './_chromium.js'
+import {isUrl} from './_is-url.js'
 
 const cssCache = new LRU({
 	max: 500,
@@ -8,7 +8,7 @@ const cssCache = new LRU({
 })
 
 export default async (req, res) => {
-	const { url } = req.query
+	const {url} = req.query
 
 	if (!isUrl(url)) {
 		res.statusCode = 400
@@ -28,7 +28,7 @@ export default async (req, res) => {
 		}
 
 		res.setHeader('Content-Type', 'text/css')
-		const css = result.map(({ css }) => css).join('\n')
+		const css = result.map(({css}) => css).join('\n')
 		return res.end(css)
 	}
 
@@ -41,10 +41,10 @@ export default async (req, res) => {
 		}
 
 		res.setHeader('Content-Type', 'text/css')
-		const css = result.map(({ css }) => css).join('\n')
+		const css = result.map(({css}) => css).join('\n')
 		return res.end(css)
 	} catch (error) {
 		res.statusCode = 500
-		return res.json({ message: error.message })
+		return res.json({message: error.message})
 	}
 }
