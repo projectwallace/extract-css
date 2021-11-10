@@ -3,7 +3,7 @@ import {extractCss} from './_chromium.js'
 import {isUrl} from './_is-url.js'
 
 const cssCache = new LRU({
-	max: 500,
+	max: 1000,
 	maxAge: 60 * 1000 // 60 seconds
 })
 
