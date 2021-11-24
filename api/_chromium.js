@@ -1,10 +1,10 @@
 /* global document */
 
-const puppeteer = require('puppeteer-core')
-const chrome = require('chrome-aws-lambda')
-const normalizeUrl = require('normalize-url')
+import puppeteer from 'puppeteer-core'
+import chrome from 'chrome-aws-lambda'
+import normalizeUrl from 'normalize-url'
 
-exports.extractCss = async url => {
+export const extractCss = async url => {
 	const browser = await puppeteer.launch({
 		args: chrome.args,
 		executablePath: await chrome.executablePath,
@@ -17,7 +17,7 @@ exports.extractCss = async url => {
 	await page.setUserAgent('Mozilla/5.0 (Macintosh; Intel Mac OS X 10.16; rv:85.0) Gecko/20100101 Firefox/85.0')
 
 	// Start CSS coverage. This is the meat and bones of this module
-	await page.coverage.startCSSCoverage().catch(() => {})
+	await page.coverage.startCSSCoverage().catch(() => { })
 
 	url = normalizeUrl(url, {stripWWW: false})
 	const response = await page.goto(url, {waitUntil: 'networkidle0'})

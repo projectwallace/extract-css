@@ -1,14 +1,14 @@
-const isUrl = require('is-url')
-const LRU = require('lru-cache')
-const { extractCss } = require('./_chromium')
+import LRU from 'lru-cache'
+import {extractCss} from './_chromium.js'
+import {isUrl} from './_is-url.js'
 
 const cssCache = new LRU({
-	max: 500,
+	max: 1000,
 	maxAge: 60 * 1000 // 60 seconds
 })
 
-module.exports = async (req, res) => {
-	const { url } = req.query
+export default async (req, res) => {
+	const {url} = req.query
 
 	if (!isUrl(url)) {
 		res.statusCode = 400
@@ -28,7 +28,7 @@ module.exports = async (req, res) => {
 		}
 
 		res.setHeader('Content-Type', 'text/css')
-		const css = result.map(({ css }) => css).join('\n')
+		const css = result.map(({css}) => css).join('\n')
 		return res.end(css)
 	}
 
@@ -41,10 +41,10 @@ module.exports = async (req, res) => {
 		}
 
 		res.setHeader('Content-Type', 'text/css')
-		const css = result.map(({ css }) => css).join('\n')
+		const css = result.map(({css}) => css).join('\n')
 		return res.end(css)
 	} catch (error) {
 		res.statusCode = 500
-		return res.json({ message: error.message })
+		return res.json({message: error.message})
 	}
 }
