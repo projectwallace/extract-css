@@ -25,6 +25,7 @@ export const extractCss = async url => {
 	// Make sure that we only try to extract CSS from valid pages.
 	// Bail out if the response is an invalid request (400, 500)
 	if (response.status() >= 400) {
+		await browser.close()
 		return Promise.reject(
 			new Error(
 				`There was an error retrieving CSS from ${url}.\n\tHTTP status code: ${response.statusCode} (${response.statusText})`
@@ -38,14 +39,13 @@ export const extractCss = async url => {
 
 	if (headers['content-type'].includes('text/css')) {
 		const css = await response.text()
+		await browser.close()
 
-		return Promise.resolve([
-			{
-				type: 'file',
-				href: url,
-				css
-			}
-		])
+		return Promise.resolve([{
+			type: 'file',
+			href: url,
+			css
+		}])
 	}
 
 	// Coverage contains a lot of <style> and <link> CSS,
@@ -105,9 +105,11 @@ export const extractCss = async url => {
 			type: 'link-or-import'
 		}))
 
-	const css = links
+	const resources = links
 		.concat(styleSheetsApiCss)
 		.concat(inlineCss)
 
-	return Promise.resolve(css)
+	await browser.close()
+
+	return Promise.resolve(resources)
 }
