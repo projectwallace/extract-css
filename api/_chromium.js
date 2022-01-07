@@ -16,19 +16,6 @@ export const extractCss = async url => {
 	// `HeadlessChrome/88.0.4298.0` and some websites/CDN's block that with a HTTP 403
 	await page.setUserAgent('Mozilla/5.0 (Macintosh; Intel Mac OS X 10.16; rv:85.0) Gecko/20100101 Firefox/85.0')
 
-	const debug = await page.evaluate(() => {
-		return {
-			navigator: {
-				languages: navigator.languages,
-				languages: navigator.language,
-				userAgent: navigator.userAgent,
-				vendor: navigator.vendor,
-				permissions: navigator.permissions,
-			},
-		}
-	})
-	console.log(JSON.stringify(debug, null, 2))
-
 	// Start CSS coverage. This is the meat and bones of this module
 	await page.coverage.startCSSCoverage().catch(() => { })
 
@@ -47,6 +34,8 @@ export const extractCss = async url => {
 		console.error(error.stack)
 		throw new Error(`There was an error retrieving CSS from ${url}. No response received from server.`)
 	}
+
+	console.log(response.request.headers)
 
 	// Make sure that we only try to extract CSS from valid pages.
 	// Bail out if the response is an invalid request (400, 500)
