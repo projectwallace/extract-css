@@ -20,16 +20,27 @@ export const extractCss = async url => {
 	await page.coverage.startCSSCoverage().catch(() => { })
 
 	url = normalizeUrl(url, {stripWWW: false})
-	const response = await page.goto(url, {waitUntil: 'networkidle0'})
+	let response
+
+	try {
+		response = await page.goto(url, {
+			waitUntil: 'networkidle0',
+			timeout: 9000
+		})
+	} catch (error) {
+		await browser.close()
+
+		console.error(error.name)
+		console.error(error.stack)
+		throw new Error(`There was an error retrieving CSS from ${url}. No response received from server.`)
+	}
 
 	// Make sure that we only try to extract CSS from valid pages.
 	// Bail out if the response is an invalid request (400, 500)
 	if (response.status() >= 400) {
 		await browser.close()
-		return Promise.reject(
-			new Error(
-				`There was an error retrieving CSS from ${url}.\n\tHTTP status code: ${response.statusCode} (${response.statusText})`
-			)
+		throw new Error(
+			`There was an error retrieving CSS from ${url}.\n\tHTTP status code: ${response.statusCode} (${response.statusText})`
 		)
 	}
 
@@ -41,11 +52,11 @@ export const extractCss = async url => {
 		const css = await response.text()
 		await browser.close()
 
-		return Promise.resolve([{
+		return [{
 			type: 'file',
 			href: url,
 			css
-		}])
+		}]
 	}
 
 	// Coverage contains a lot of <style> and <link> CSS,
@@ -89,6 +100,9 @@ export const extractCss = async url => {
 			// Filter out empty style="" attributes
 			.filter(Boolean)
 	})
+
+	await browser.close()
+
 	const inlineCss = inlineCssRules
 		.map(rule => `[x-extract-css-inline-style] { ${rule} }`)
 		.map(css => ({type: 'inline', href: url, css}))
@@ -109,7 +123,5 @@ export const extractCss = async url => {
 		.concat(styleSheetsApiCss)
 		.concat(inlineCss)
 
-	await browser.close()
-
-	return Promise.resolve(resources)
+	return resources
 }
