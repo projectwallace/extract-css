@@ -12,6 +12,19 @@ export const extractCss = async url => {
 	})
 	const page = await browser.newPage()
 
+	const debug = await page.evaluate(() => {
+		return {
+			navigator: {
+				languages: navigator.languages,
+				languages: navigator.language,
+				userAgent: navigator.userAgent,
+				vendor: navigator.vendor,
+				permissions: navigator.permissions,
+			},
+		}
+	})
+	console.log(JSON.stringify(debug, null, 2))
+
 	// Set an explicit UserAgent, because the default UserAgent string includes something like
 	// `HeadlessChrome/88.0.4298.0` and some websites/CDN's block that with a HTTP 403
 	await page.setUserAgent('Mozilla/5.0 (Macintosh; Intel Mac OS X 10.16; rv:85.0) Gecko/20100101 Firefox/85.0')
@@ -19,7 +32,7 @@ export const extractCss = async url => {
 	// Start CSS coverage. This is the meat and bones of this module
 	await page.coverage.startCSSCoverage().catch(() => { })
 
-	url = normalizeUrl(url, {stripWWW: false})
+	url = normalizeUrl(url, { stripWWW: false })
 	let response
 
 	try {
@@ -74,7 +87,7 @@ export const extractCss = async url => {
 				return {
 					type: stylesheet.ownerNode.tagName.toLowerCase(),
 					href: stylesheet.href || document.location.href,
-					css: [...stylesheet.cssRules].map(({cssText}) => cssText).join('\n')
+					css: [...stylesheet.cssRules].map(({ cssText }) => cssText).join('\n')
 				}
 			})
 	})
@@ -105,7 +118,7 @@ export const extractCss = async url => {
 
 	const inlineCss = inlineCssRules
 		.map(rule => `[x-extract-css-inline-style] { ${rule} }`)
-		.map(css => ({type: 'inline', href: url, css}))
+		.map(css => ({ type: 'inline', href: url, css }))
 
 	const links = coverage
 		// Filter out the <style> tags that were found in the coverage
