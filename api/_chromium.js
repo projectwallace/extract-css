@@ -35,7 +35,7 @@ export const extractCss = async url => {
 		throw new Error(`There was an error retrieving CSS from ${url}. No response received from server.`)
 	}
 
-	console.log(response.request.headers())
+	console.log(response.request().headers())
 
 	// Make sure that we only try to extract CSS from valid pages.
 	// Bail out if the response is an invalid request (400, 500)
