@@ -16,10 +16,16 @@ export const extractCss = async url => {
 	// 'User-Agent' and 'upgrade-insecure-requests', which probably makes
 	// some websites block this scraper. Add some more to make it look more real
 	await page.setExtraHTTPHeaders({
-		Accept: '*/*',
+		Accept: 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8',
 		'Accept-Encoding': 'gzip, deflate, br',
 		'Accept-Language': 'en-GB,en;q=0.5',
 		'Cache-Control': 'no-cache',
+		Pragma: 'no-cache',
+		'Sec-Fetch-Dest': 'document',
+		'Sec-Fetch-Mode': 'navigate',
+		'Sec-Fetch-Site': 'none',
+		'Sec-Fetch-User': '?1',
+		'Sec-GPC': '1',
 	})
 
 	// Set an explicit UserAgent, because the default UserAgent string includes something like
