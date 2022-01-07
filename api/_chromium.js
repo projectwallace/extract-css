@@ -16,6 +16,18 @@ export const extractCss = async url => {
 	// `HeadlessChrome/88.0.4298.0` and some websites/CDN's block that with a HTTP 403
 	await page.setUserAgent('Mozilla/5.0 (Macintosh; Intel Mac OS X 10.16; rv:85.0) Gecko/20100101 Firefox/85.0')
 
+	// When running on Vercel, the request only contains headers for
+	// 'User-Agent' and 'upgrade-insecure-requests', which probably makes
+	// some websites block this scraper. Add some more to make it look more real
+	await page.setExtraHTTPHeaders({
+		Accept: '*/*',
+		'Accept-Encoding': 'gzip, deflate, br',
+		'Accept-Language': 'en-GB,en;q=0.5',
+		'Cache-Control': 'no-cache',
+		Connection: 'keep-alive',
+		TE: 'trailers',
+	})
+
 	// Start CSS coverage. This is the meat and bones of this module
 	await page.coverage.startCSSCoverage().catch(() => { })
 
