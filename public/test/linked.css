@@ -1,0 +1,5 @@
+@import url('imported.css?from=linked');
+
+#i-am-linked {
+  color: red;
+}

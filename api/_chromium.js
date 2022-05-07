@@ -19,7 +19,7 @@ export const extractCss = async url => {
 	// Start CSS coverage. This is the meat and bones of this module
 	await page.coverage.startCSSCoverage().catch(() => { })
 
-	url = normalizeUrl(url, {stripWWW: false})
+	url = normalizeUrl(url, { stripWWW: false })
 	let response
 
 	try {
@@ -74,7 +74,7 @@ export const extractCss = async url => {
 				return {
 					type: stylesheet.ownerNode.tagName.toLowerCase(),
 					href: stylesheet.href || document.location.href,
-					css: [...stylesheet.cssRules].map(({cssText}) => cssText).join('\n')
+					css: [...stylesheet.cssRules].map(({ cssText }) => cssText).join('\n')
 				}
 			})
 	})
@@ -105,7 +105,7 @@ export const extractCss = async url => {
 
 	const inlineCss = inlineCssRules
 		.map(rule => `[x-extract-css-inline-style] { ${rule} }`)
-		.map(css => ({type: 'inline', href: url, css}))
+		.map(css => ({ type: 'inline', href: url, css }))
 
 	const links = coverage
 		// Filter out the <style> tags that were found in the coverage

@@ -1,0 +1,5 @@
+@import url('imported.css?from=media');
+
+.i-am-in-media {
+  width: 9000px;
+}

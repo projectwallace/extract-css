@@ -1,0 +1,5 @@
+@import url('imported.css?from=alternate');
+
+.i-am-alternate {
+  font-size: 1em;
+}
