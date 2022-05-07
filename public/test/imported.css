@@ -1,0 +1,2 @@
+@import url('imported.css?from=imported');
+.i-am-imported{color:#000}

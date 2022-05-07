@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CSS Kitchen Sink</title>
+  <link rel="stylesheet" href="/test/linked.css">
+  <link rel="stylesheet alternate" href="alternate.css">
+  <link rel="stylesheet" href="media.css" media="(min-width: 9000px)">
+  <style>
+    @import url("imported.css?from=style-tag");
+    @import url("imported.css?from=style-tag&media") screen and (min-width: 9000px);
+
+    .in-style-tag[minified=false] {
+      color: #000000;
+    }
+  </style>
+</head>
+
+<body>
+  <h1 style="color: deeppink">CSS Kitchen Sink</h1>
+</body>
+
+</html>
