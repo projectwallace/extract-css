@@ -81,7 +81,17 @@ export function getStyles(nodes) {
 }
 
 export async function extractCss(url) {
-  var { body } = await got(url)
+  var { body, headers } = await got(url)
+
+  // Return early if our response was a CSS file already
+  if (headers['content-type'].includes('text/css')) {
+    return [{
+      type: 'file',
+      href: url,
+      css: body
+    }]
+  }
+
   var nodes = getStyleNodes(body)
   var items = getStyles(nodes)
   var result = []
