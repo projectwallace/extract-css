@@ -15,7 +15,7 @@
 		"@jridgewell/resolve-uri": "^3.0.7",
 		"chrome-aws-lambda": "^10.1.0",
 		"css-tree": "^2.1.0",
-		"got": "^11.8.3",
+		"got": "^11.8.5",
 		"linkedom": "^0.14.9",
 		"normalize-url": "^7.0.2",
 		"puppeteer-core": "^10.4.0"
