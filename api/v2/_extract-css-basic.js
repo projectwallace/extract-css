@@ -83,9 +83,11 @@ export function getStyles(nodes) {
 export class HttpError extends Error {
   constructor({ url, statusCode, originalMessage }) {
     super()
+
+    var code = statusCode === 'ENOTFOUND' ? 404 : 500
     this.url = url
-    this.statusCode = statusCode === 'ENOTFOUND' ? 404 : 500
-    this.message = `The origin server at "${url}" errored with statusCode ${statusCode}`
+    this.statusCode = code
+    this.message = `The origin server at "${url}" errored with statusCode ${code}`
     this.originalMessage = originalMessage
   }
 }
