@@ -99,7 +99,7 @@ export async function extractCss(url) {
     headers = response.headers
   } catch (error) {
     console.error(error)
-    throw new HttpError({ url, statusCode, statusText })
+    throw new HttpError({ url, statusCode: error.code, statusText: error.message })
   }
 
   // Return early if our response was a CSS file already
