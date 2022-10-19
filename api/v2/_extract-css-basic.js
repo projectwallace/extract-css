@@ -98,6 +98,7 @@ export async function extractCss(url) {
     body = response.body
     headers = response.headers
   } catch (error) {
+    console.error(error)
     throw new HttpError({ url, statusCode, statusText })
   }
 
@@ -137,8 +138,6 @@ export async function extractCss(url) {
       if (importUrls.length > 0) {
         var cssRequests = importUrls.map(
           importUrl => getCssFile(resolveUrl(importUrl, url))
-            // silently fail on sub-resources
-            .catch(_ => '')
         )
         var importedFiles = await Promise.all(cssRequests)
         importedFiles.map((css, index) => {
