@@ -82,6 +82,7 @@ export function getStyles(nodes) {
 
 export class HttpError extends Error {
   constructor({ url, statusCode, statusText }) {
+    super()
     this.url = url
     this.statusCode = statusCode
     this.statusText = statusText
