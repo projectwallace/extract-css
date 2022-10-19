@@ -35,7 +35,9 @@ function getImportUrls(css) {
 
 export async function getCssFile(url) {
   try {
-    var { body } = await got(url)
+    var { body } = await got(url, {
+      timeout: 8000
+    })
     return body
   } catch (error) {
     console.error(`CSS not found at ${url} (HTTP ${error.response.statusCode})`)
@@ -97,7 +99,9 @@ export async function extractCss(url) {
   let headers = {}
 
   try {
-    var response = await got(url)
+    var response = await got(url, {
+      timeout: 8000
+    })
     body = response.body
     headers = response.headers
   } catch (error) {
