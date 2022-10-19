@@ -80,8 +80,26 @@ export function getStyles(nodes) {
   return items
 }
 
+export class HttpError extends Error {
+  constructor({ url, statusCode, statusText }) {
+    this.url = url
+    this.statusCode = statusCode
+    this.statusText = statusText
+    this.message = `The origin server at "${url}" errored with status ${statusCode} (${statusText})`
+  }
+}
+
 export async function extractCss(url) {
-  var { body, headers } = await got(url)
+  let body = ''
+  let headers = {}
+
+  try {
+    var response = await got(url)
+    body = response.body
+    headers = response.headers
+  } catch (error) {
+    throw new HttpError({ url, statusCode, statusText })
+  }
 
   // Return early if our response was a CSS file already
   if (headers['content-type'].includes('text/css')) {
@@ -117,7 +135,11 @@ export async function extractCss(url) {
       // And c'mon, don't @import inside your @import.
       var importUrls = getImportUrls(item.css)
       if (importUrls.length > 0) {
-        var cssRequests = importUrls.map(importUrl => getCssFile(resolveUrl(importUrl, url)))
+        var cssRequests = importUrls.map(
+          importUrl => getCssFile(resolveUrl(importUrl, url))
+            // silently fail on sub-resources
+            .catch(_ => '')
+        )
         var importedFiles = await Promise.all(cssRequests)
         importedFiles.map((css, index) => {
           result.push({

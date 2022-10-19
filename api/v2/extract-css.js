@@ -1,5 +1,5 @@
 import { isUrl } from '../_is-url.js'
-import { extractCss } from './_extract-css-basic.js'
+import { extractCss, HttpError } from './_extract-css-basic.js'
 
 export default async (req, res) => {
   const { url } = req.query
@@ -26,6 +26,15 @@ export default async (req, res) => {
     const css = result.map(({ css }) => css).join('\n')
     return res.end(css)
   } catch (error) {
+    if (error instanceof HttpError) {
+      res.statusCode = error.statusCode
+      return res.json({
+        url,
+        statusCode: error.statusCode,
+        statusText: error.statusText,
+        message: error.message,
+      })
+    }
     res.statusCode = 500
     return res.json({ message: error.message })
   }
