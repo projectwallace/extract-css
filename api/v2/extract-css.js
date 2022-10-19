@@ -31,11 +31,11 @@ export default async (req, res) => {
       return res.json({
         url,
         statusCode: error.statusCode,
-        statusText: error.statusText,
         message: error.message,
+        originalMessage: error.originalMessage,
       })
     }
     res.statusCode = 500
-    return res.json({ message: error.message })
+    return res.json({ url, message: error.message })
   }
 }
