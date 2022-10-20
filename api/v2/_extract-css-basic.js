@@ -89,6 +89,9 @@ export class HttpError extends Error {
     if (!Number.isFinite(statusCode)) {
       statusCode = 500
     }
+    if (statusCode === 'ENOTFOUND') {
+      statusCode = 404
+    }
 
     this.url = url
     this.statusCode = statusCode
