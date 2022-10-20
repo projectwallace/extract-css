@@ -86,14 +86,13 @@ export class HttpError extends Error {
   constructor({ url, statusCode, originalMessage }) {
     super()
 
-    var code = 500
-    if (statusCode === 'ENOTFOUND') {
-      code = 404
+    if (!Number.isFinite(statusCode)) {
+      statusCode = 500
     }
 
     this.url = url
     this.statusCode = code
-    this.message = `The origin server at "${url}" errored with statusCode ${code}`
+    this.message = `The origin server at "${url}" errored with statusCode ${statusCode}`
     this.originalMessage = originalMessage
   }
 }
