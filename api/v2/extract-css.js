@@ -27,7 +27,7 @@ export default async (req, res) => {
     return res.end(css)
   } catch (error) {
     if (error instanceof HttpError) {
-      res.statusCode = error.statusCode
+      res.statusCode = 200
       return res.json({
         url,
         statusCode: error.statusCode,
