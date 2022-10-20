@@ -109,6 +109,7 @@ export async function extractCss(url) {
     body = response.body
     headers = response.headers
   } catch (error) {
+    console.error('status code', error.response?.statusCode)
     console.error(error)
     throw new HttpError({
       url,
