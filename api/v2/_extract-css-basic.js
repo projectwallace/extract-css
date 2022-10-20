@@ -110,10 +110,11 @@ export async function extractCss(url) {
     headers = response.headers
   } catch (error) {
     console.error(error)
-    if (error.response) {
-      console.log(error.response)
-    }
-    throw new HttpError({ url, statusCode: error.code, originalMessage: error.message })
+    throw new HttpError({
+      url,
+      statusCode: error.response ? error.response.statusCode : error.code,
+      originalMessage: error.message
+    })
   }
 
   // Return early if our response was a CSS file already
