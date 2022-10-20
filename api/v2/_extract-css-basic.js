@@ -91,7 +91,7 @@ export class HttpError extends Error {
     }
 
     this.url = url
-    this.statusCode = code
+    this.statusCode = statusCode
     this.message = `The origin server at "${url}" errored with statusCode ${statusCode}`
     this.originalMessage = originalMessage
   }
