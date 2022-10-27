@@ -82,23 +82,6 @@ export function getStyles(nodes) {
   return items
 }
 
-export class HttpError extends Error {
-  constructor({ url, statusCode, originalMessage }) {
-    super()
-
-    if (statusCode === 'ENOTFOUND') {
-      statusCode = 404
-    } else if (!Number.isFinite(statusCode)) {
-      statusCode = 500
-    }
-
-    this.url = url
-    this.statusCode = statusCode
-    this.message = `The origin server at "${url}" errored with statusCode ${statusCode}`
-    this.originalMessage = originalMessage
-  }
-}
-
 export async function extractCss(url) {
   let body = ''
   let headers = {}
@@ -110,13 +93,21 @@ export async function extractCss(url) {
     body = response.body
     headers = response.headers
   } catch (error) {
-    console.error('status code', error.response?.statusCode)
-    console.error(error)
-    throw new HttpError({
-      url,
-      statusCode: error.response ? error.response.statusCode : error.code,
-      originalMessage: error.message
-    })
+    let statusCode = error.response?.statusCode
+
+    if (statusCode === 'ENOTFOUND') {
+      statusCode = 404
+    } else if (!Number.isFinite(statusCode)) {
+      statusCode = 500
+    }
+
+    return {
+      error: {
+        statusCode,
+        message: `The origin server at "${url}" errored with statusCode ${statusCode}`,
+        originalMessage: error.message,
+      }
+    }
   }
 
   // Return early if our response was a CSS file already
