@@ -15,7 +15,10 @@ export default async (req, res) => {
   try {
     const result = await extractCss(url)
 
-    res.statusCode = 200
+    if ('error' in result) {
+      return res.json({ error: result.error })
+    }
+
     res.setHeader('Cache-Control', 'max-age=60')
 
     if (req.headers.accept.includes('application/json')) {
@@ -27,6 +30,6 @@ export default async (req, res) => {
     return res.end(css)
   } catch (error) {
     res.statusCode = 500
-    return res.json({ message: error.message })
+    return res.json({ url, message: error.message })
   }
 }

@@ -35,7 +35,9 @@ function getImportUrls(css) {
 
 export async function getCssFile(url) {
   try {
-    var { body } = await got(url)
+    var { body } = await got(url, {
+      timeout: 8000
+    })
     return body
   } catch (error) {
     console.error(`CSS not found at ${url} (HTTP ${error.response.statusCode})`)
@@ -81,7 +83,33 @@ export function getStyles(nodes) {
 }
 
 export async function extractCss(url) {
-  var { body, headers } = await got(url)
+  let body = ''
+  let headers = {}
+
+  try {
+    var response = await got(url, {
+      timeout: 8000
+    })
+    body = response.body
+    headers = response.headers
+  } catch (error) {
+    let statusCode = error.code
+
+    if (statusCode === 'ENOTFOUND' || error.message === 'Response code 404 (Not Found)') {
+      statusCode = 404
+    } else if (!Number.isFinite(statusCode)) {
+      console.error(error)
+      statusCode = 500
+    }
+
+    return {
+      error: {
+        statusCode,
+        message: `The origin server at "${url}" errored with statusCode ${statusCode}`,
+        originalMessage: error.message,
+      }
+    }
+  }
 
   // Return early if our response was a CSS file already
   if (headers['content-type'].includes('text/css')) {
@@ -117,7 +145,9 @@ export async function extractCss(url) {
       // And c'mon, don't @import inside your @import.
       var importUrls = getImportUrls(item.css)
       if (importUrls.length > 0) {
-        var cssRequests = importUrls.map(importUrl => getCssFile(resolveUrl(importUrl, url)))
+        var cssRequests = importUrls.map(
+          importUrl => getCssFile(resolveUrl(importUrl, url))
+        )
         var importedFiles = await Promise.all(cssRequests)
         importedFiles.map((css, index) => {
           result.push({
