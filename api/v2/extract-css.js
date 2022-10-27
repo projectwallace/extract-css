@@ -16,11 +16,9 @@ export default async (req, res) => {
     const result = await extractCss(url)
 
     if ('error' in result) {
-      res.statusCode = result.error.statusCode
       return res.json(result.error)
     }
 
-    res.statusCode = 200
     res.setHeader('Cache-Control', 'max-age=60')
 
     if (req.headers.accept.includes('application/json')) {
