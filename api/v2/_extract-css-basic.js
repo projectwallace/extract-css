@@ -93,11 +93,12 @@ export async function extractCss(url) {
     body = response.body
     headers = response.headers
   } catch (error) {
-    let statusCode = error.response?.statusCode
+    let statusCode = error.code
 
-    if (statusCode === 'ENOTFOUND') {
+    if (statusCode === 'ENOTFOUND' || error.message === 'Response code 404 (Not Found)') {
       statusCode = 404
     } else if (!Number.isFinite(statusCode)) {
+      console.error(error)
       statusCode = 500
     }
 
